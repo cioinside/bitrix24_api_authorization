@@ -276,4 +276,22 @@ class Bitrix24Authorization
 
         return $b24_auth_code;
     }
+
+	public function refresh($refresh_token)
+	{
+		$get_data = [
+			'grant_type' => 'refresh_token',
+			'client_id' => $this->app_id,
+			'client_secret' => $this->app_secret,
+			'refresh_token' => $refresh_token,
+		];
+
+		$b24_auth_response = CurlHelper::factory('https://oauth.bitrix.info/oauth/token/')
+			->setGetFields($get_data)
+			->exec();
+
+		$this->bitrix24_access = $b24_auth_response['data'];
+
+		return $this->bitrix24_access;
+	}
 }
